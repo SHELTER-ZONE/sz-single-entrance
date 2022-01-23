@@ -8,7 +8,7 @@
       </n-steps>
     </div>
 
-    <CooldownButton v-if="showCooldown" :btnText="btnText" :active="count" @next="nextRule" />
+    <CooldownButton v-if="showCooldown" :seconds="5" :btnText="btnText" :active="count" @next="nextRule" />
   </div>
 </template>
 

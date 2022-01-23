@@ -34,7 +34,7 @@ const props = defineProps({
   },
   seconds: {
     type: Number || String,
-    default: 1,
+    default: 10,
   },
 })
 
