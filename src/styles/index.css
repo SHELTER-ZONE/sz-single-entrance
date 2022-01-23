@@ -1,0 +1,12 @@
+html, body, #app {
+    @apply  w-full h-full;
+   }
+
+.page-padding {
+    @apply pb-[30px]  w-full;
+}
+
+.common-width {
+    @apply max-w-[500px] min-w-[250px] w-full m-auto;
+    @apply <max:px-[20px];
+}
