@@ -1,14 +1,16 @@
 <template>
   <n-config-provider :theme="darkTheme" class="w-full h-full overflow-y-auto">
-    <h1 class="static-title">SHELTER ZONE</h1>
-    <h3 class="page-title">{{ pageTitle }}</h3>
-    <router-view />
+    <n-message-provider>
+      <h1 class="static-title">SHELTER ZONE</h1>
+      <h3 class="page-title">{{ pageTitle }}</h3>
+      <router-view />
+    </n-message-provider>
   </n-config-provider>
 </template>
 
 <script setup>
 import { computed } from '@vue/runtime-core'
-import { NConfigProvider, darkTheme } from 'naive-ui'
+import { NConfigProvider, darkTheme, NMessageProvider } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -20,13 +22,13 @@ const pageReaded = computed(() => store.state.pageReaded)
 router.beforeEach((to, from) => {
   if (to.name === 'Rules' && !pageReaded.value.important) router.replace({ name: 'Home' })
   if (to.name === 'Join' && !pageReaded.value.rules) router.replace({ name: 'Home' })
-  // router.replace({ name: 'Home' })
 })
 
 const pageTitle = computed(() => {
   let title = route.name
   const routeName = route.name
   if (routeName === 'Home') title = 'About'
+  if (routeName === 'EntryCheck') title = '🚧 Entry Check'
   return title
 })
 </script>

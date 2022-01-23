@@ -22,6 +22,11 @@ const routes = [
     component: () => import('@/views/Join.vue'),
   },
   {
+    path: '/entry-check',
+    name: 'EntryCheck',
+    component: () => import('@/views/EntryCheck/EntryCheck.vue'),
+  },
+  {
     path: '/welcome',
     name: 'Welcome',
     component: () => import('@/views/Welcome.vue'),
