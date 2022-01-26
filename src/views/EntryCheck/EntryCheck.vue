@@ -11,15 +11,15 @@
     >
       <n-form-item>
         <n-statistic label="IP">
-          <span v-if="clientInfo.query" class="text-md">{{ clientInfo.query }}</span>
-          <n-spin v-if="!clientInfo.query" size="small" />
+          <span v-if="ip" class="text-md">{{ ip }}</span>
+          <n-spin v-if="!ip" size="small" />
         </n-statistic>
       </n-form-item>
 
       <n-form-item>
         <n-statistic label="Country">
-          <span v-if="clientInfo.country" class="text-md">{{ clientInfo.country }}</span>
-          <n-spin v-if="!clientInfo.country" size="small" />
+          <span v-if="country" class="text-md">{{ country }}</span>
+          <n-spin v-if="!country" size="small" />
         </n-statistic>
       </n-form-item>
 
@@ -31,7 +31,7 @@
 
       <n-statistic label="Discord ID">
         <n-form-item path="userID">
-          <n-input v-model:value="formData.userID" />
+          <n-input v-model:value="formData.userID" maxlength="18" />
         </n-form-item>
       </n-statistic>
     </n-form>
@@ -63,7 +63,7 @@
 import { reactive, ref } from '@vue/reactivity'
 import { onMounted } from '@vue/runtime-core'
 import { NButton, NIcon, NTooltip, NStatistic, NSelect, NInput, NForm, NFormItem, NAlert, NSpin, useMessage } from 'naive-ui'
-import { GetClientInfo } from '@/api/clientInfo'
+import { GetClientIP, GetIPInfo } from '@/api/clientInfo'
 import { GetEntryCode } from '@/api/entryCheck'
 import { Copy } from '@vicons/carbon'
 import CooldownButton from '@/components/CooldownButton.vue'
@@ -71,10 +71,8 @@ import CountrySelectModal from './components/CountrySelectModal.vue'
 import copy from 'copy-to-clipboard'
 
 const message = useMessage()
-const clientInfo = ref({
-  query: null,
-  country: null,
-})
+const ip = ref(null)
+const country = ref(null)
 const loading = ref(false)
 const count = ref(0)
 const entryCode = ref('')
@@ -92,7 +90,11 @@ const formRules = reactive({
   userID: {
     required: true,
     trigger: 'blur',
-    message: '請填寫',
+    message: '請填寫正確ID',
+    validator: (r, v) => {
+      if (!v) return false
+      return v.length === 18 && /^\d+$/.test(v)
+    },
   },
 })
 const formRef = ref(null)
@@ -123,34 +125,48 @@ const copyEntryCode = () => {
 }
 
 const updateCountry = async (country) => {
-  clientInfo.value.country = country
-  if (!clientInfo.value.query) clientInfo.value.query = '0.0.0.0'
+  country.value = country
+  if (!ip.value) ip.value = '0.0.0.0'
   await generateCode()
 }
 
-const getClientInfo = async () => {
-  const [res, err] = await GetClientInfo()
+const getClientIP = async () => {
+  const [res, err] = await GetClientIP()
   if (err) {
     console.log(err)
     return false
   }
-  clientInfo.value = res
+  ip.value = res.ip
   return true
 }
+const getIPInfo = async () => {
+  const [res, err] = await GetIPInfo({ ip: ip.value })
+  if (err) {
+    message.error(err)
+    return false
+  }
+  country.value = res.country_name
+  return true
+}
+
 const getEntryCode = async () => {
   const [res, err] = await GetEntryCode({
-    country: clientInfo.value.country,
+    country: country.value,
     id: formData.userID,
     source: formData.source,
-    ip: clientInfo.value.query,
+    ip: ip.value,
   })
-  if (err) return console.log(err)
+  if (err) {
+    message.error(err)
+    loading.value = false
+    return
+  }
   entryCode.value = res.data
 }
 
 const generateCode = async () => {
   loading.value = true
-  if (!clientInfo.value.country) {
+  if (!country.value) {
     manual.value = true
     loading.value = false
     return
@@ -167,7 +183,8 @@ const generateCode = async () => {
 }
 
 onMounted(async () => {
-  await getClientInfo()
+  await getClientIP()
+  await getIPInfo()
 })
 </script>
 

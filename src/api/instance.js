@@ -13,10 +13,8 @@ const handleSuccessRes = (response) => {
 }
 
 const handleErrorRes = (error) => {
-  const errCode = error.response.data.errorCode
-  let msg = error.response.data.msg
-  if (errCode) msg = `${errCode}: ${msg}`
-  return [null, msg || error]
+  const errMsg = error.response.data.error.message
+  return [null, errMsg || error.response.data]
 }
 
 //= > use
