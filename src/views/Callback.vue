@@ -10,16 +10,18 @@ import { useStore } from 'vuex'
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
-const loggedin = computed(() => store.state.auth.loggedin)
+const loggedIn = computed(() => store.state.auth.loggedIn)
 
 onMounted(async () => {
-  if (loggedin.value) return router.replace({ name: 'Home' })
+  console.log('callback')
+  console.log(loggedIn.value)
+  // if (loggedIn.value) return router.replace({ name: 'Home' })
   await router.isReady()
   const code = route.query.code
   console.log(code)
   const [getTokenErr] = await store.dispatch('getDCAccessToken', { code })
   if (getTokenErr) return console.error(getTokenErr)
-  store.commit('auth/setLoggedin', true)
+  store.commit('SET_LOGGEDIN', true)
 })
 </script>
 
