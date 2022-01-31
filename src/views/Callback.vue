@@ -3,24 +3,22 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from '@vue/runtime-core'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted } from '@vue/runtime-core'
+import { useMessage } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 const store = useStore()
 const router = useRouter()
-const route = useRoute()
-const loggedIn = computed(() => store.state.auth.loggedIn)
+const message = useMessage()
 
 onMounted(async () => {
-  console.log('callback')
-  console.log(loggedIn.value)
-  // if (loggedIn.value) return router.replace({ name: 'Home' })
   await router.isReady()
-  const code = route.query.code
-  console.log(code)
-  const [getTokenErr] = await store.dispatch('getDCAccessToken', { code })
-  if (getTokenErr) return console.error(getTokenErr)
+  let code = location.href.split('/')[3].split('=')[1]
+  code = code.replace('#', '')
+  const [res, getTokenErr] = await store.dispatch('getDCAccessToken', { code })
+  if (getTokenErr) return message.error(getTokenErr.message)
+  console.log(res)
   store.commit('SET_LOGGEDIN', true)
 })
 </script>

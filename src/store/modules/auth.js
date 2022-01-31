@@ -20,17 +20,15 @@ const auth = ({
   actions: {
     async getDCAuthorizeUrl () {
       const [res, err] = await GetDCAuthorizeUrl({
-        redirectUri: `${location.protocol}//${location.host}/callback`,
+        redirectUri: `${location.protocol}//${location.host}/#/callback`,
       })
-      console.log(`${location.protocol}//${location.host}/callback`)
-      alert()
       if (err) return [null, err]
       return [res, null]
     },
     async getDCAccessToken ({ commit }, { code }) {
       const [res, err] = await GetDCAccessToken({
         code,
-        redirectUri: `${location.protocol}//${location.host}/callback`,
+        redirectUri: `${location.protocol}//${location.host}/#/callback`,
       })
       if (err) return [null, err]
       commit('SET_ACCESSTOKEN', res.access_token)
