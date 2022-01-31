@@ -14,7 +14,7 @@ const message = useMessage()
 
 onMounted(async () => {
   await router.isReady()
-  let code = location.href.split('/')[3].split('=')[1]
+  let code = location.href.split('/')[4].split('=')[1]
   code = code.replace('#', '')
   const [res, getTokenErr] = await store.dispatch('getDCAccessToken', { code })
   if (getTokenErr) return message.error(getTokenErr.message)
