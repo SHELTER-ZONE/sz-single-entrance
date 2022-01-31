@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { computed } from '@vue/runtime-core'
+import { computed, onMounted } from '@vue/runtime-core'
 import { NConfigProvider, darkTheme, NMessageProvider } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -31,6 +31,7 @@ const pageTitle = computed(() => {
   if (routeName === 'EntryCheck') title = '🚧 Entry Check'
   return title
 })
+
 </script>
 
 <style lang="postcss">

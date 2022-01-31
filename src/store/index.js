@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { includes } from 'lodash-es'
+import auth from './modules/auth'
 
 const store = createStore({
   state: {
@@ -14,6 +15,9 @@ const store = createStore({
     },
   },
   actions: {},
+  modules: {
+    auth,
+  },
   getters: {
     haveNoReaded: (state) => {
       const res = includes(state.pageReaded, false)

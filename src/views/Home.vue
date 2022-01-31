@@ -10,7 +10,22 @@
 </template>
 
 <script setup>
+import { computed, onMounted } from '@vue/runtime-core'
 import { NButton } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+
+const router = useRouter()
+const store = useStore()
+const loggedin = computed(() => store.state.auth.loggedin)
+
+onMounted(async () => {
+  if (loggedin.value) return router.replace({ name: 'Home' })
+
+  const [dcAuthLink, getLinkErr] = await store.dispatch('getDCAuthorizeUrl')
+  if (getLinkErr) return console.error(getLinkErr)
+  location.href = dcAuthLink
+})
 </script>
 
 <style lang="postcss" scoped>
