@@ -13,7 +13,7 @@ const handleSuccessRes = (response) => {
 }
 
 const handleErrorRes = (error) => {
-  const errMsg = error.response.data.error.message
+  const errMsg = error.response.data?.error?.message
   return [null, errMsg || error.response.data]
 }
 

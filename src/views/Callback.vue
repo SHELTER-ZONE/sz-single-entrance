@@ -16,9 +16,10 @@ onMounted(async () => {
   await router.isReady()
   let code = location.href.split('/')[4].split('=')[1]
   code = code.replace('#', '')
-  const [res, getTokenErr] = await store.dispatch('getDCAccessToken', { code })
+  const [, getTokenErr] = await store.dispatch('getDCAccessToken', { code })
   if (getTokenErr) return message.error(getTokenErr.message)
-  console.log(res)
+  await store.dispatch('findMe')
+  router.replace({ name: 'Important' })
   store.commit('SET_LOGGEDIN', true)
 })
 </script>

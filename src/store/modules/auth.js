@@ -1,17 +1,18 @@
 import { GetDCAuthorizeUrl, GetDCAccessToken } from '@/api/oauth'
+import { FindMe } from '@/api/user'
 
 const auth = ({
   state: {
     loggedIn: false,
     user: null,
-    accesstoken: null,
+    accessToken: null,
   },
   mutations: {
     SET_USER: (state, user) => {
       state.user = user
     },
-    SET_ACCESSTOKEN: (state, accesstoken) => {
-      state.accesstoken = accesstoken
+    SET_ACCESS_TOKEN: (state, accessToken) => {
+      state.accessToken = accessToken
     },
     SET_LOGGEDIN: (state, loggedIn) => {
       state.loggedIn = loggedIn
@@ -31,7 +32,13 @@ const auth = ({
         redirectUri: `${location.protocol}//${location.host}/sz-single-entrance/#/callback`,
       })
       if (err) return [null, err]
-      commit('SET_ACCESSTOKEN', res.access_token)
+      commit('SET_ACCESS_TOKEN', res.access_token)
+      return [res, null]
+    },
+    async findMe ({ state, commit }) {
+      const [res, err] = await FindMe(state.accessToken)
+      if (err) return [null, err]
+      commit('SET_USER', res)
       return [res, null]
     },
   },

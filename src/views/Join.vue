@@ -46,22 +46,37 @@
 import { NAlert, NIcon, NButton } from 'naive-ui'
 import { Time, Home } from '@vicons/carbon'
 import { useRouter } from 'vue-router'
-import { onMounted, ref } from '@vue/runtime-core'
+import { computed, onMounted, ref } from '@vue/runtime-core'
 import anime from 'animejs'
+import { TemporaryJoin, PermanentJoin } from '@/api/joinType'
+import { useStore } from 'vuex'
 
 const router = useRouter()
 const type = ref('')
+const store = useStore()
+const userID = computed(() => store.state.auth.user.id)
+
+const permanentJoin = async () => {
+  const [res, err] = await PermanentJoin({
+    memberID: userID.value,
+  })
+}
+
+const temporaryJoin = async () => {
+  const [res, err] = await TemporaryJoin({
+    memberID: userID.value,
+  })
+}
 
 const Join = async () => {
   if (type.value === 'temporary') {
-    // TODO api 紀錄加入方式
-    // TODO 取得SZ邀請連結
+    await temporaryJoin()
     alert('TODO 加入伺服器')
     return
   }
 
   if (type.value === 'permanent') {
-    // TODO api 紀錄加入方式
+    await permanentJoin()
     return router.push({ name: 'EntryCheck' })
   }
 }
