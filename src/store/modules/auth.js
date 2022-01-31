@@ -22,6 +22,8 @@ const auth = ({
       const [res, err] = await GetDCAuthorizeUrl({
         redirectUri: `${location.protocol}//${location.host}/callback`,
       })
+      console.log(`${location.protocol}//${location.host}/callback`)
+      alert()
       if (err) return [null, err]
       return [res, null]
     },

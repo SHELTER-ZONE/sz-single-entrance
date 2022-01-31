@@ -8,6 +8,9 @@
     <router-link :to="{name: 'Important'}">
       <n-button strong secondary round type="primary">Next</n-button>
     </router-link>
+    <router-link :to="{name: 'Callback'}">
+      <n-button strong secondary round type="primary">callback</n-button>
+    </router-link>
   </div>
 </template>
 
