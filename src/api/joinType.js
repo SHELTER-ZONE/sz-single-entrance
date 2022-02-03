@@ -1,5 +1,12 @@
 import { api } from '@/api/instance'
 
+export const GetMemberJoinType = async (memberID) => {
+  return await api({
+    url: `https://sz-bot-dev.deta.dev/cacheData/joinType/${memberID} `,
+    method: 'GET',
+  })
+}
+
 export const TemporaryJoin = async ({
   memberID,
 }) => {

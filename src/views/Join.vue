@@ -33,55 +33,90 @@
         secondary
         round
         type="primary"
+        :loading="loading"
         :disabled="!type"
         @click="Join"
       >
         {{ type === 'permanent' ?'前往認證' :'加入伺服器' }}
       </n-button>
     </div>
+    <span class="text-sm">{{ hint }}</span>
   </div>
 </template>
 
 <script setup>
-import { NAlert, NIcon, NButton } from 'naive-ui'
+import { NAlert, NIcon, NButton, useMessage } from 'naive-ui'
 import { Time, Home } from '@vicons/carbon'
 import { useRouter } from 'vue-router'
 import { computed, onMounted, ref } from '@vue/runtime-core'
 import anime from 'animejs'
-import { TemporaryJoin, PermanentJoin } from '@/api/joinType'
+import { GetMemberJoinType, TemporaryJoin, PermanentJoin } from '@/api/joinType'
 import { useStore } from 'vuex'
 
 const router = useRouter()
-const type = ref('')
 const store = useStore()
+const message = useMessage()
+const type = ref('')
+const hint = ref('')
+const loading = ref(false)
 const userID = computed(() => store.state.auth.user.id)
+
+const getMemberJoinType = async () => {
+  const [type, err] = await GetMemberJoinType(userID.value)
+  if (err) return err
+  return type
+}
 
 const permanentJoin = async () => {
   const [res, err] = await PermanentJoin({
     memberID: userID.value,
   })
+  if (err) {
+    message.error(err)
+    return false
+  }
+  return true
 }
 
 const temporaryJoin = async () => {
   const [res, err] = await TemporaryJoin({
     memberID: userID.value,
+    // memberID: undefined,
   })
+  if (err) {
+    message.error(err)
+    return false
+  }
+  return true
+}
+
+const reset = () => {
+  loading.value = false
+  hint.value = ''
 }
 
 const Join = async () => {
+  // 檢查是否已在伺服器中
+  loading.value = true
+  hint.value = '登記資料中...'
+  // await getMemberJoinType()
+
   if (type.value === 'temporary') {
-    await temporaryJoin()
-    alert('TODO 加入伺服器')
+    if (!await temporaryJoin()) return reset()
+    window.location.href = 'https://discord.gg/D3MQjxzTgg'
+    reset()
     return
   }
 
   if (type.value === 'permanent') {
-    await permanentJoin()
+    if (!await permanentJoin()) return reset()
+    reset()
     return router.push({ name: 'EntryCheck' })
   }
 }
 
 onMounted(() => {
+  if (!userID.value) return router.replace({ name: 'Home' })
   anime({
     targets: '.join-type',
     translateY: [20, 0],

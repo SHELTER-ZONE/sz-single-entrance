@@ -1,9 +1,11 @@
 <template>
-  <main class="signin" />
+  <main class="signin">
+    {{ stage }}
+  </main>
 </template>
 
 <script setup>
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, ref } from '@vue/runtime-core'
 import { useMessage } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -11,6 +13,7 @@ import { useStore } from 'vuex'
 const store = useStore()
 const router = useRouter()
 const message = useMessage()
+const stage = ref('認證中...')
 
 onMounted(async () => {
   await router.isReady()
@@ -18,8 +21,9 @@ onMounted(async () => {
   code = code.replace('#', '')
   const [, getTokenErr] = await store.dispatch('getDCAccessToken', { code })
   if (getTokenErr) return message.error(getTokenErr.message)
+  stage.value = '取得使用者資訊...'
   await store.dispatch('findMe')
-  router.replace({ name: 'Important' })
+  router.replace('/important')
   store.commit('SET_LOGGEDIN', true)
 })
 </script>

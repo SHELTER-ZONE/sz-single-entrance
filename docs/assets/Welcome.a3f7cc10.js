@@ -1,0 +1,1 @@
+import{_ as e}from"./index.09ecedec.js";import{o as c,y as o}from"./vendor.6448bf7c.js";const r={},t={id:"welcome"};function n(s,_){return c(),o("div",t," welcome ")}var m=e(r,[["render",n]]);export{m as default};

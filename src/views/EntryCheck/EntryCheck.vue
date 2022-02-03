@@ -1,5 +1,5 @@
 <template>
-  <div id="entry-check">
+  <div v-if="user" id="entry-check">
     <n-form
       ref="formRef"
       :model="formData"
@@ -30,8 +30,9 @@
       </n-statistic>
 
       <n-statistic label="Discord ID">
-        <n-form-item path="userID">
-          <n-input v-model:value="formData.userID" maxlength="18" />
+        <n-form-item>
+          <!-- <n-input v-model:value="formData.userID" maxlength="18" /> -->
+          <span class="text-md">{{ user.id }}</span>
         </n-form-item>
       </n-statistic>
     </n-form>
@@ -52,7 +53,9 @@
 
     <div class="grid justify-center gap-[20px] mb-[40px]">
       <CooldownButton :loading="loading" btnText="生成驗證碼" :active="cooldown" :seconds="count" @click="generateCode" />
-      <n-button quaternary type="primary" class="underline">加入伺服器</n-button>
+      <a href="https://discord.gg/D3MQjxzTgg" target="_blank" rel="noopener noreferrer">
+        <n-button quaternary type="primary" class="underline">加入伺服器</n-button>
+      </a>
     </div>
   </div>
 
@@ -61,7 +64,7 @@
 
 <script setup>
 import { reactive, ref } from '@vue/reactivity'
-import { onMounted } from '@vue/runtime-core'
+import { computed, onMounted } from '@vue/runtime-core'
 import { NButton, NIcon, NTooltip, NStatistic, NSelect, NInput, NForm, NFormItem, NAlert, NSpin, useMessage } from 'naive-ui'
 import { GetClientIP, GetIPInfo } from '@/api/clientInfo'
 import { GetEntryCode } from '@/api/entryCheck'
@@ -69,8 +72,14 @@ import { Copy } from '@vicons/carbon'
 import CooldownButton from '@/components/CooldownButton.vue'
 import CountrySelectModal from './components/CountrySelectModal.vue'
 import copy from 'copy-to-clipboard'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 const message = useMessage()
+const router = useRouter()
+const store = useStore()
+const user = computed(() => store.state.auth.user)
+
 const ip = ref(null)
 const country = ref(null)
 const loading = ref(false)
@@ -152,7 +161,7 @@ const getIPInfo = async () => {
 const getEntryCode = async () => {
   const [res, err] = await GetEntryCode({
     country: country.value,
-    id: formData.userID,
+    id: user.value.id,
     source: formData.source,
     ip: ip.value,
   })
@@ -183,6 +192,7 @@ const generateCode = async () => {
 }
 
 onMounted(async () => {
+  if (!user.value) return router.replace({ name: 'Home' })
   await getClientIP()
   await getIPInfo()
 })
