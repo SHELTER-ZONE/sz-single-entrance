@@ -22,6 +22,11 @@ const routes = [
     component: () => import('@/views/Rules.vue'),
   },
   {
+    path: '/links',
+    name: 'Links',
+    component: () => import('@/views/Links.vue'),
+  },
+  {
     path: '/join',
     name: 'Join',
     component: () => import('@/views/JoinServer.vue'),

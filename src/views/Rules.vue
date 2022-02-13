@@ -34,7 +34,7 @@ const btnText = ref('Next')
 const nextRule = () => {
   if (current.value === rules.length) {
     store.commit('SET_PAGE_READED', 'rules')
-    return router.push({ name: 'Join' })
+    return router.push({ name: 'Links' })
   }
   showCooldown.value = false
   current.value += 1

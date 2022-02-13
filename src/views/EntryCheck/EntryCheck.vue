@@ -39,7 +39,7 @@
 
     <div class="common-width">
       <n-alert type="success" :show-icon="false" class="code-show ">
-        {{ entryCode || '請生成驗證碼' }}
+        <span style="margin-right: 5px">{{ entryCode || '請生成驗證碼' }}</span>
         <n-tooltip v-if="entryCode">
           <template #trigger>
             <n-icon class="cursor-pointer" @click="copyEntryCode">
