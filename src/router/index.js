@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/join',
     name: 'Join',
-    component: () => import('@/views/Join.vue'),
+    component: () => import('@/views/JoinServer.vue'),
   },
   {
     path: '/entry-check',
