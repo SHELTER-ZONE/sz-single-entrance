@@ -19,6 +19,9 @@ onMounted(async () => {
   await router.isReady()
   let code = location.href.split('/')[4].split('=')[1]
   code = code.replace('#', '')
+  if (code.includes('access_denied') || code.includes('error_description')) {
+    return router.replace('/')
+  }
   const [, getTokenErr] = await store.dispatch('getDCAccessToken', { code })
   if (getTokenErr) return message.error(getTokenErr.message)
   stage.value = '取得使用者資訊...'
