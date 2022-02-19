@@ -3,10 +3,10 @@ html, body, #app {
    }
 
 .page-padding {
-    @apply pb-[30px]  w-full;
+    @apply pb-[100px]  w-full;
 }
 
 .common-width {
-    @apply max-w-[500px] min-w-[250px] w-full m-auto;
+    @apply max-w-[500px] min-w-[250px] w-full m-auto ;
     @apply <max:px-[20px];
 }

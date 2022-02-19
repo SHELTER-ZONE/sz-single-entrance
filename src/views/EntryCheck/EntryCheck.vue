@@ -39,20 +39,32 @@
 
     <div class="common-width">
       <n-alert type="success" :show-icon="false" class="code-show ">
-        <span style="margin-right: 5px">{{ entryCode || '請生成驗證碼' }}</span>
+        <span style="margin-right: 10px">{{ entryCode || '請生成驗證碼指令' }}</span>
         <n-tooltip v-if="entryCode">
           <template #trigger>
             <n-icon class="cursor-pointer" @click="copyEntryCode">
               <Copy />
             </n-icon>
           </template>
-          複製驗證碼
+          複製驗證碼指令
         </n-tooltip>
       </n-alert>
+
+      <p class="help-text" @click="showHelp = true">
+        <n-icon size="16"><Help /></n-icon>
+        <span class="ml-1">點我查看認證步驟</span>
+      </p>
     </div>
 
     <div class="grid justify-center gap-[20px] mb-[40px]">
-      <CooldownButton :loading="loading" btnText="生成驗證碼" :active="cooldown" :seconds="count" @click="generateCode" />
+      <CooldownButton
+        v-if="showCooldown"
+        :loading="loading"
+        btnText="生成驗證碼指令"
+        :active="cooldown"
+        :seconds="count"
+        @click="generateCode"
+      />
       <a href="https://discord.gg/D3MQjxzTgg" target="_blank" rel="noopener noreferrer">
         <n-button quaternary type="primary" class="underline">加入伺服器</n-button>
       </a>
@@ -60,6 +72,7 @@
   </div>
 
   <CountrySelectModal v-if="manual" @change="updateCountry" />
+  <HelpModal v-if="showHelp" @close="showHelp = false" />
 </template>
 
 <script setup>
@@ -68,12 +81,13 @@ import { computed, onMounted } from '@vue/runtime-core'
 import { NButton, NIcon, NTooltip, NStatistic, NSelect, NInput, NForm, NFormItem, NAlert, NSpin, useMessage } from 'naive-ui'
 import { GetClientIP, GetIPInfo } from '@/api/clientInfo'
 import { GetEntryCode } from '@/api/entryCheck'
-import { Copy } from '@vicons/carbon'
+import { Copy, Help } from '@vicons/carbon'
 import CooldownButton from '@/components/CooldownButton.vue'
 import CountrySelectModal from './components/CountrySelectModal.vue'
 import copy from 'copy-to-clipboard'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import HelpModal from './components/HelpModal.vue'
 
 const message = useMessage()
 const router = useRouter()
@@ -81,10 +95,12 @@ const store = useStore()
 const user = computed(() => store.state.auth.user)
 
 const ip = ref(null)
+const showHelp = ref(false)
 const country = ref(null)
 const loading = ref(false)
 const count = ref(0)
 const entryCode = ref('')
+const showCooldown = ref(true)
 const cooldown = ref(true)
 const formData = reactive({
   source: null,
@@ -130,7 +146,7 @@ const sources = [
 
 const copyEntryCode = () => {
   copy(entryCode.value)
-  message.success('已複製驗證碼 !')
+  message.success('已複製驗證碼指令 !')
 }
 
 const updateCountry = async (country) => {
@@ -170,7 +186,13 @@ const getEntryCode = async () => {
     loading.value = false
     return
   }
-  entryCode.value = res.data
+  showCooldown.value = false
+  entryCode.value = `sz/check ${res.data}`
+  cooldown.value = true
+  count.value = 30
+  setTimeout(() => {
+    showCooldown.value = true
+  }, 100)
 }
 
 const generateCode = async () => {
@@ -219,5 +241,9 @@ onMounted(async () => {
 
 :deep(.n-base-selection-placeholder) {
   @apply justify-center;
+}
+
+.help-text {
+  @apply text-yellow-400 flex items-center justify-center text-sub underline mt-[10px] cursor-pointer;
 }
 </style>

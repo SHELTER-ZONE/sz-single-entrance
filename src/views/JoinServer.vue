@@ -10,7 +10,10 @@
         <template #icon>
           <n-icon><Time /></n-icon>
         </template>
-        <div>只是想詢問一些問題，並無在伺服器長久居住的打算</div>
+        <div>只是想詢問一些問題或路過，並無在伺服器長久居住的打算</div>
+        <div class="text-gray-400">
+          加入後你只能看到部分頻道，但之後仍可重新選擇方式加入
+        </div>
       </n-alert>
 
       <n-alert
@@ -24,6 +27,10 @@
         </template>
 
         <div>打算在伺服器長久居住的打算</div>
+        <div class="text-gray-400">
+          選擇此方式加入，將前往驗證碼認證步驟<br>
+          在認證完成之前，你都只能看到部分頻道
+        </div>
       </n-alert>
     </div>
 
@@ -40,7 +47,7 @@
         {{ type === 'permanent' ?'前往認證' :'加入伺服器' }}
       </n-button>
     </div>
-    <span class="text-sm">{{ hint }}</span>
+    <span class="text-sm">{{ type? hint : '請選擇加入方式' }}</span>
   </div>
 </template>
 
