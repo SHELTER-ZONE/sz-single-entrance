@@ -149,8 +149,8 @@ const copyEntryCode = () => {
   message.success('已複製驗證碼指令 !')
 }
 
-const updateCountry = async (country) => {
-  country.value = country
+const updateCountry = async (selectCountry) => {
+  country.value = selectCountry
   if (!ip.value) ip.value = '0.0.0.0'
   await generateCode()
 }
@@ -159,6 +159,7 @@ const getClientIP = async () => {
   const [res, err] = await GetClientIP()
   if (err) {
     console.log(err)
+    ip.value = '0.0.0.0'
     return false
   }
   ip.value = res.ip
@@ -207,8 +208,8 @@ const generateCode = async () => {
       loading.value = false
       return
     }
-    if (!errors) {
-      if (!await getEntryCode()) loading.value = false
+    if (!await getEntryCode()) {
+      loading.value = false
     }
   })
 }
