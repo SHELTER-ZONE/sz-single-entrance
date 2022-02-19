@@ -87,10 +87,14 @@ const getGuildMembers = async () => {
       page,
     })
     if (err) return
-    if (res.length < limit) done = true
-    memberCount += res.length
-    const lastUser = res[res.length - 1].user.id
-    page = lastUser
+    if (res) {
+      if (res.length < limit) done = true
+      memberCount += res.length
+      const lastUser = res[res.length - 1].user.id
+      page = lastUser
+    }
+    done = true
+    memberCount = 'server error'
   }
   members.value = memberCount
 }
@@ -102,8 +106,8 @@ const getOnlineMembers = async () => {
 }
 
 onBeforeMount(async () => {
-  await getGuildMembers()
   await getOnlineMembers()
+  await getGuildMembers()
   loaded.value = false
 })
 </script>
