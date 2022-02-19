@@ -12,7 +12,9 @@ export const GetGuildMembers = async ({ limit, page }) => {
     method: 'GET',
     url: 'https://sz-dashboard.deta.dev/guild/members',
     params: {
-      limit, page,
+      limit,
+      page,
+      time: Number(new Date()),
     },
   })
 }

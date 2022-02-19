@@ -93,8 +93,11 @@ const getGuildMembers = async () => {
       const lastUser = res[res.length - 1].user.id
       page = lastUser
     }
-    done = true
-    memberCount = 'server error'
+
+    if (!res) {
+      memberCount = 'server error'
+      done = true
+    }
   }
   members.value = memberCount
 }
